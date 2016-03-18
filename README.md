@@ -2,6 +2,7 @@
 
 ## 安裝
 * 下載程式碼：
+
 	```$ git clone https://github.com/naernlp/Segmentor```
     
 * 下載斷詞及詞性標記模型：
@@ -10,6 +11,7 @@
 	* 下載後於 Segmentor 目錄下解壓縮
 *  安裝程式與資料：
 	* 在 Segmentor 目錄下執行安裝：
+
 	    ```
 	    $ sudo python setup.py install
 	    ```

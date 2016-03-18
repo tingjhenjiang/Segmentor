@@ -29,7 +29,7 @@ import CRFPP
 from Tokenizer import *
 
 ## set ../Data directory as default model directory 
-__default_model_dir__=os.path.abspath(os.path.dirname(__file__)+'/../Data')
+__default_model_dir__=os.path.abspath(os.path.dirname(__file__)+'/Data')
 
 
 class Segmentor(object):

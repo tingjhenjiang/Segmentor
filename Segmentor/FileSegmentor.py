@@ -29,7 +29,7 @@ from Struct import *
 
 ## set ../Data directory as default model directory 
 
-__default_model_dir__=os.path.abspath(os.path.dirname(__file__)+'/../Data')
+__default_model_dir__=os.path.abspath(os.path.dirname(__file__)+'/Data')
 
 class FilePOSTagger(DocPOSTagger):
 	def __init__(self, model_dir=__default_model_dir__):

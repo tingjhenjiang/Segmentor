@@ -1,0 +1,181 @@
+#!/usr/bin/python
+#-*- encoding: UTF-8 -*-
+#
+#  NAER Segmentor  - 
+#  Copyright (c) 2016 National Academy for Educational Research
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+from optparse import OptionParser
+from Segmentor import *
+import string
+import os,sys
+import json
+import locale
+import re
+
+def parseArg():
+	parser = OptionParser(usage='Usage: %prog [options] input_file1[::output_file1] ...')
+
+	parser.add_option('-s','--suffix', action='store', type='string',
+		 dest='suffix', help='suffix for output file', default='.seg')
+
+	parser.add_option('-m','--model', action='store', type='string',
+		 dest='model', help='directory of models for word segmention and POS tagging', default=None)
+
+	parser.add_option('-p','--postag', action='store_true',
+		 dest='postag', help='POS tagging switch', default=False)
+
+	parser.add_option('-n','--disable-segment', action='store_false',
+		 dest='segment', help='segmentation switch', default=True)
+
+	parser.add_option('-b','--boundary', action='store', type='string',
+		 dest='boundary', help='word boundary', default=u" ")
+
+	parser.add_option('-f', '--format', action='store', type='string',
+		 dest='format', help='output format for a tagged word', default="%s(%s)")
+
+	parser.add_option('--output-dir', action='store', type='string',
+		 dest='outputdir', help='save output files to specific directory', default="")
+
+	parser.add_option('-l', '--list', action='store', type='string',
+		 dest='list', help='read input file list from file', default="")
+
+	parser.add_option('-v', '--verbose', action='store_true',
+		 dest='verbose', help='enable verbose mode', default=False)
+
+	parser.add_option('-e','--encoding', action='store', type='string',
+		 dest='encoding', help='set input and output encoding', default="UTF-8")
+
+	parser.add_option('--region', action='append', type='string',
+		 dest='region', help='set processing region. e.g. --region="<chtitle>::</chtitle>" will segment text between <chtitle> and </chtitle> tags. "::" is the separator of the start and end tags.', default=[])
+
+	parser.add_option('--mask', action='append', type='string',
+		 dest='mask', help='set mask region which will not be processed. e.g. --mask="<[^>]+>" will prevent html tags, such as <font size="12">, to be segmented.', default=[])
+
+	parser.add_option('-D','--directory', action='append', type='string',
+		 dest='directory', help='set input (and output) directory. e.g. --directory="dir1::dir2" will process files in dir1 and output to dir2.', default=[])
+
+	parser.add_option('--exclude', action='store', type='string',
+		 dest='exclude', help='set exclude regular expression.', default="")
+
+	parser.add_option('--include', action='store', type='string',
+		 dest='include', help='set include regular expression.', default="")
+
+	parser.add_option('-R','--recursive', action='store_true',
+		 dest='recursive', help='set exclude regular expression.', default=False)
+
+	parser.add_option('--line', action='store_true',
+		 dest='line', help='process data line by line.', default=False)
+
+	(options, args)=parser.parse_args()
+
+	loc_encoding=locale.getdefaultlocale()[1]
+
+	options.boundary=options.boundary.decode("string_escape").decode(loc_encoding)
+	options.format=options.format.decode("string_escape").decode(loc_encoding)
+	options.region=[x.decode("string_escape").decode(loc_encoding) for x in options.region]
+	options.mask=[x.decode("string_escape").decode(loc_encoding) for x in options.mask]
+
+	if len(args)==0 and len(options.list)==0 and len(options.directory)==0:
+		parser.error('input file needed!')
+
+	if len(options.outputdir)>0:
+		if not os.path.isdir(options.outputdir):
+			parser.error('directory "%s" not found!')
+
+	if len(options.list) >0:
+		if options.list!="-" and not os.path.exists(options.list):
+			parser.error('list file "%s" not found!')
+
+	if (not options.segment) and (not options.postag):
+		parser.error('segment and postag cannot be disabled in the same time!')
+
+
+	return (options, args)
+
+if __name__=="__main__":
+
+	(options, args)=parseArg()
+
+	if options.verbose:
+		sys.stderr.write("Loading word segmentation model ... ")
+
+	if options.model:
+		segmentor=FileSegmentor(model_dir=options.model, segment=options.segment, postag=options.postag)
+	else:
+		segmentor=FileSegmentor(segment=options.segment, postag=options.postag)
+
+	if options.verbose:
+		sys.stderr.write('done.\n')
+
+	segmentor.setBoundary(options.boundary)
+	segmentor.setFormat(options.format)
+
+	if len(options.region)>0:
+		segmentor.setRegion(region_list=options.region)
+
+	if len(options.mask)>0:
+		segmentor.setMask(mask_list=options.mask)
+
+	if options.outputdir:
+		segmentor.setOutputDir(options.outputdir)
+
+	if options.suffix:
+		segmentor.setSuffix(options.suffix)
+
+	if options.line:
+		segmentor.line_mode=True
+
+	for filename in args:
+		if filename=="-":
+			segmentor.procFile(sys.stdin, sys.stdout)
+		else:
+			segmentor.procFile(filename)
+
+	if len(options.list)>0:
+		if options.list=="-":
+			list_f=sys.stdin
+		else:
+			list_f=open(options.list)
+
+		for filename in list_f:
+			filename=filename.strip(" \r\n")
+			if options.verbose:
+				sys.stderr.write('Processing "%s" ... '%(filename))
+
+			if os.path.isfile(filename):
+				segmentor.procFile(filename)
+				if options.verbose:
+					sys.stderr.write('done.\n')
+			elif options.verbose:
+				sys.stderr.write('is a directory, skiped.\n')
+
+	if len(options.directory)>0:
+		for item in options.directory:
+			L=item.split('::')
+			exclude=None
+			if len(options.exclude)>0:
+				exclude=options.exclude
+			include=None
+			if len(options.include)>0:
+				include=options.include
+			if len(L)==1:
+				segmentor.procDir(item, exclude=exclude, include=include, 
+								recursive=options.recursive, verbose=options.verbose)
+			else:
+				segmentor.procDir(L[0],L[1], exclude=exclude, include=include, 
+								recursive=options.recursive, verbose=options.verbose)
+

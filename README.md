@@ -8,15 +8,46 @@
 * 下載斷詞及詞性標記模型：
 	* 下載處：
 		* [naer-segmentor-models-20160318.tar.gz](http://120.127.233.228/download/Segmentor/naer-segmentor-models-20160318.tar.gz)
-	* 下載後於 Segmentor 目錄下解壓縮
+	* 模型下載後於 Segmentor/Segmentor 目錄下解壓縮
+		```
+		$ wget http://120.127.233.228/download/Segmentor/naer-segmentor-models-xxx.tar.gz
+		$ tar zxvf naer-segmentor-models-xxx.tar.gz -C Segmentor/Segmentor
+		```
+* 安裝 CRF++
+	* 下載處：
+		* https://taku910.github.io/crfpp/
+	* 安裝 CRF++：
+		```
+		$ tar zxvf CRF++-058.tar.gz
+		$ cd CRF++-058
+		$ ./configure
+		$ make
+		$ sudo make install
+		```
+	* 安裝 python 介面(CRFPP)：
+		
+		```
+		$ cd python
+		$ sudo python setup.py install
+		```
 *  安裝程式與資料：
 	* 在 Segmentor 目錄下執行安裝：
 
 	    ```
 	    $ sudo python setup.py install
 	    ```
+
+## Segmentor 模組簡易使用方法
+```
+>>> import json
+>>> from Segmentor import *
+>>> segmenter=Segmentor()
+>>> words=segmenter.segment(u"中文斷詞系統。")
+>>> print json.dumps(words,ensure_ascii=False)
+>>> ["中文", "斷詞", "系統", "。"]
+```
 	    
-## 參數說明
+## 命令列參數說明
 ```
 Usage: naer_seg [options] input_file1[::output_file1] ...
 

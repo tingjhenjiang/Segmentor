@@ -1,11 +1,11 @@
-# 國教院中文斷詞系統
+# 國教院中文分詞系統
 
 ## 安裝
 * 下載程式碼：
 
 	```$ git clone https://github.com/naernlp/Segmentor```
     
-* 下載斷詞及詞性標記模型：
+* 下載分詞及詞性標記模型：
 	* 下載處：
 		* [naer-segmentor-models-20160318.tar.gz](http://120.127.233.228/download/Segmentor/naer-segmentor-models-20160318.tar.gz)
 	* 模型下載後於 Segmentor/Segmentor 目錄下解壓縮
@@ -49,9 +49,9 @@
 >>> import json
 >>> from Segmentor import *
 >>> segmenter=Segmentor()
->>> words=segmenter.segment(u"中文斷詞系統。")
+>>> words=segmenter.segment(u"中文分詞系統。")
 >>> print json.dumps(words,ensure_ascii=False)
->>> ["中文", "斷詞", "系統", "。"]
+>>> ["中文", "分詞", "系統", "。"]
 ```
 	    
 ## 命令列參數說明

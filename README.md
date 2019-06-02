@@ -1,4 +1,6 @@
-# 國教院分詞系統原始碼下載
+# 國教院分詞系統原始碼（適用於Python 3）下載
+
+（本分支可安裝於Python 3的系統上；以下說明沿用自[國家教育研究院分詞系統原始碼系統網頁](https://github.com/naernlp/Segmentor)；部分並有修改。）
 
 國教院分詞系統採純統計式模型，純統計式模型好處是模型簡單，執行速度快，程式簡單容易維護。但缺點是使用者不能提供自己的詞典。
 
@@ -12,7 +14,7 @@
 ## 安裝
 * 下載程式碼：
 
-	```$ git clone https://github.com/naernlp/Segmentor```
+	```$ git clone https://github.com/tingjhenjiang/Segmentor.git```
     
 * 下載分詞及詞性標記模型：
 	* 下載處：
@@ -25,24 +27,12 @@
 		```
 
 * 安裝 CRF++
-	* 下載處：
-		* https://taku910.github.io/crfpp/
-	* 安裝 CRF++：
-
-		```
-		$ tar zxvf CRF++-058.tar.gz
-		$ cd CRF++-058
-		$ ./configure
-		$ make
-		$ sudo make install
-		```
 
 	* 安裝 python 介面(CRFPP)：
 
 		
 		```
-		$ cd python
-		$ sudo python setup.py install
+		$ pip install crfpy
 		```
 
 *  安裝程式與資料：

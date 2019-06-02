@@ -66,12 +66,12 @@ class Tokenizer:
 if __name__ == "__main__":
 	a=u"asdadsfa\nadsfasdf\n\nasdfasdf\r\n"
 	L=Tokenizer.ToSents(a)
-	print L
+	print(L)
 	Tokenizer.splitRule=re.compile(u'[^ ]*[ ]')
 	a=u"asdadsfa adsfasdf\nasdfasdf "
 	L=Tokenizer.ToSents(a)
-	print L
+	print(L)
 	a=u"這是中文 asdadsfa adsf中文asdf 這是中文 國家教 育研 究院\n研究國\n家教育asdfasdf "
-	print a
+	print(a)
 	L=Tokenizer.ToTokens(a)
-	print json.dumps(L,ensure_ascii=False).encode("UTF-8")
+	print(json.dumps(L,ensure_ascii=False).encode("UTF-8"))

@@ -126,12 +126,12 @@ if __name__ == '__main__':
 
 	Tagger = POSTagger()
 	result = Tagger.procSentStr(u"這是 一 個 測試 。")
-	print " ".join(["%s(%s)" % data for data in result])
+	print(" ".join(["%s(%s)" % data for data in result]))
 
 	result = Tagger.procSent([u"這是",u"一", u"個", u"測試", u"。"])
-	print " ".join(["%s(%s)" % data for data in result])
+	print(" ".join(["%s(%s)" % data for data in result]))
 
 	result = Tagger.procSents([[u"這是",u"一", u"個", u"測試", u"。"], [u"這是",u"另", u"一", u"個", u"測試", u"。"]])
 	for sent in result:
-		print " ".join(["%s(%s)" % data for data in sent])
+		print(" ".join(["%s(%s)" % data for data in sent]))
 	

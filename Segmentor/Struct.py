@@ -140,7 +140,7 @@ class StructList(list):
 		list.__init__(self, json.loads(string))
 
 
-class Word(unicode):
+class Word(str):
 	def __new__(cls, *args, **kw):
 		self=super(Word, cls).__new__(cls, *args, **kw)
 		return self
@@ -180,21 +180,21 @@ class Sentence(StructList):
 	
 if __name__=="__main__":
 	a=Word(u'中文')
-	print "Word=",a
+	print("Word=",a)
 
 	a=WordPos(word=u'中文',pos=u'Na')
 	b=WordPos(word=u'英文',pos=u'Na')
 
 	#print "WordPos.dumps()",a.dumps().encode("UTF-8")
-	print "WordPos",a
+	print("WordPos",a)
 	WordPos.format="%s/%s"
-	print "WordPos",a
+	print("WordPos",a)
 
 	x=a
 	a=Sentence([a,b])
-	print "Sentence.dumps():",a.dumps().encode("UTF-8")
-	print "Sentence:",str(a)
-	print unicode(a).encode("UTF-8")
+	print("Sentence.dumps():",a.dumps().encode("UTF-8"))
+	print("Sentence:",str(a))
+	print(unicode(a).encode("UTF-8"))
 	Sentence.boundary="XXX"
-	print unicode(a).encode("UTF-8")
+	print(unicode(a).encode("UTF-8"))
 

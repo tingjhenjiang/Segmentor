@@ -24,8 +24,8 @@
 import os,re
 import string
 from Segmentor import *
-from POSTagger import *
-from Struct import *
+from Segmentor.POSTagger import *
+from Segmentor.Struct import *
 
 ## set ../Data directory as default model directory 
 
@@ -265,18 +265,18 @@ if __name__=="__main__":
 </body>
 '''
 
-	print "DEBUG1: 測試 region and mask"
+	print("DEBUG1: 測試 region and mask")
 	b=DocSegmentor(postag=True)
 	b.setMask('<[^>]+>')
 	b.setRegion(region_list=[u'<title>::</title>',u'<text>::</text>'])
 	xml_doc1=b.procDoc(xml_doc)
-	print xml_doc1.encode("UTF-8")
+	print(xml_doc1.encode("UTF-8"))
 
-	print "DEBUG2: 測試 region on desc"
+	print("DEBUG2: 測試 region on desc")
 	b=DocSegmentor(postag=True)
 	b.setRegion(region_list=[u'<desc>::</desc>'])
 	xml_doc2=b.procDoc(xml_doc1)
-	print xml_doc2.encode("UTF-8")
+	print(xml_doc2.encode("UTF-8"))
 
 	doc=u"""你摸著一下\n對@@@你先摸\nOK\n拿自己的車\n馬祖的那個島是不太大\n但是它們的坡度很大\n所以我們在一輪車的練習方面
 要多練習這個上坡的　下坡的
@@ -289,26 +289,26 @@ if __name__=="__main__":
 
 	# 半型空白不可以 mask 因為 CRFPP 以空白當分隔符號
 
-	print "DEBUG3: 測試 mask and boundary"
+	print("DEBUG3: 測試 mask and boundary")
 	c=DocSegmentor(postag=True)
 	c.setMask(mask_list=[u'　', u'@@@', u' '])
 	c.setBoundary(boundary=u'|||')
 	doc2=c.procDoc(doc)
-	print doc2.encode("UTF-8")
+	print(doc2.encode("UTF-8"))
 
-	print "DEBUG4: 測試 POStagger and boundary"
+	print("DEBUG4: 測試 POStagger and boundary")
 	d=DocSegmentor(postag=False)
 	d.setRegion(region_list=[u'<title>::</title>',u'<text>::</text>'])
 	d.setBoundary(boundary=u'|||')
 	d.setMask('<[^>]+>')
 	xml_doc2=d.procDoc(xml_doc)
-	print xml_doc2.encode("UTF-8")
+	print(xml_doc2.encode("UTF-8"))
 
 	d1=DocPOSTagger()
 	d1.setRegion(region_list=[u'<title>::</title>',u'<text>::</text>'])
 	d1.setBoundary(boundary='|||')
 	d1.setMask('<[^>]+>')
 	xml_doc3=d1.procDoc(xml_doc2)
-	print xml_doc3.encode("UTF-8")
+	print(xml_doc3.encode("UTF-8"))
 
 

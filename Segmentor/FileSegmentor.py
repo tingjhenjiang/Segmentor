@@ -24,8 +24,8 @@
 
 import os,re,sys
 import string
-from DocSegmentor import *
-from Struct import *
+from Segmentor.DocSegmentor import *
+from Segmentor.Struct import *
 
 ## set ../Data directory as default model directory 
 

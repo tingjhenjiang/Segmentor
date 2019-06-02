@@ -26,11 +26,10 @@ import time
 import subprocess
 import string
 import CRFPP
-from Tokenizer import *
+from Segmentor.Tokenizer import *
 
 ## set ../Data directory as default model directory 
 __default_model_dir__=os.path.abspath(os.path.dirname(__file__)+'/Data')
-
 
 class Segmentor(object):
 	## 中文字元
@@ -59,10 +58,14 @@ class Segmentor(object):
 		CRFModel=os.path.join(model_dir,'DefaultModel')
 
 		# 載入 char bigram MI
-		self.MIDic = pickle.load(open(MIDic,'r'))
+		#self.MIDic = pickle.load(open(MIDic,'r'))
+		with open(MIDic,'rb') as fileobj:
+			self.MIDic = pickle.load(fileobj, encoding='utf-8')
 
 		# 載入簡單字典
-		self.WordDic = pickle.load(open(WordDic,'r'))
+		#self.WordDic = pickle.load(open(WordDic,'r'))
+		with open(WordDic, 'rb') as fileobj:
+			self.WordDic = pickle.load(fileobj, encoding='utf-8') 
 
 		# 指定 CRF 模型檔名
 		self.CRFModel = CRFModel
@@ -246,9 +249,9 @@ class Segmentor(object):
 					else:
 						tokenLabel_list.append((tokens[0],"B"))
 				except:##for capture errors
-					print "|".join(words)
-					print word
-					print tokens
+					print("|".join(words))
+					print(word)
+					print(tokens)
 					
 				##more than 1 token
 				if len(tokens) > 1:
@@ -273,7 +276,7 @@ class Segmentor(object):
 		train_file.close()
 		out_file.close()
 
-		print "training data is generated in %s " % training_file,time.ctime()
+		print("training data is generated in %s " % training_file,time.ctime())
 
 		return True
 
@@ -283,9 +286,9 @@ class Segmentor(object):
 			training_file: the name of training file ('e.g., /Data/trainfile')
 			model_name: the name of the generated model ('e.g., /model/Model_1')
 		'''
-		print "start training",time.ctime()
+		print("start training",time.ctime())
 		subprocess.check_output(["crf_learn","-f","3",template_file,training_file,model_name])
-		print "training completed",time.ctime()
+		print("training completed",time.ctime())
 		return True	
 
 
@@ -306,11 +309,15 @@ class Segmentor(object):
 		##get features for labeling
 		# 每個字都加上一些 features
 		token_features = self.__generateFeatures(tokens,'test')
-
 		# 因為 model 是用 UTF-8 格式建立的，所以執行 CRF tagger 時，要先轉成 UTF-8 字串，再餵入 tagger
 		for fea in token_features:
-				x=(fea[0]+" "+string.join(fea[1]," ")).encode("UTF-8")
-				self.tagger.add(x)
+			#import sys
+			#x=(fea[0]+" "+string.join(fea[1]," ")).encode("UTF-8")
+			joinedfea1 = " ".join(fea[1])
+			#x=(str(fea[0])+" "+joinedfea1).encode("UTF-8")
+			x=(str(fea[0])+" "+joinedfea1)
+			#sys.exit(x)
+			self.tagger.add(x)
 			
 		# parse and change internal stated as parsed
 		self.tagger.parse()
@@ -326,7 +333,8 @@ class Segmentor(object):
 
 		# 由於 tagger 的 model 是 UTF-8 建立的，所以輸出也是 UTF-8 碼
 		# 執行完成之後，要再轉回 UNICODE
-		tagged_tokens = [(data[0].decode("UTF-8"),data[-1]) for data in seg_result]
+		#tagged_tokens = [(data[0].decode("UTF-8"),data[-1]) for data in seg_result]
+		tagged_tokens = [(data[0],data[-1]) for data in seg_result]
 		return tagged_tokens
 
 	def _assemble_tokens(self, tagged_tokens):
@@ -373,8 +381,8 @@ if __name__=="__main__":
 	#L=a.segment(doc)
 	#print json.dumps(L,ensure_ascii=False).encode("UTF-8")
 	sents=Tokenizer.ToSents(doc)
-	print json.dumps(sents,ensure_ascii=False).encode("UTF-8")
+	print(json.dumps(sents,ensure_ascii=False).encode("UTF-8"))
 	#L=a.procSents(sents)
 	#print json.dumps(L,ensure_ascii=False).encode("UTF-8")
 	L=a.procSents(sents)
-	print json.dumps(L,ensure_ascii=False).encode("UTF-8")
+	print(json.dumps(L,ensure_ascii=False).encode("UTF-8"))

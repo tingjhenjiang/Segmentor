@@ -52,7 +52,10 @@
 >>> print json.dumps(words,ensure_ascii=False)
 >>> ["中文", "分詞", "系統", "。"]
 ```
-	    
+
+## 分成句子：Tokenizer.ToSents（請見Segmentor.py文件尾部範例）
+## 加上詞性：Tagger.procSentStr（請見POSTagger.py文件尾部範例）
+
 ## 命令列參數說明
 
 ```

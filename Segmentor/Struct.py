@@ -171,12 +171,14 @@ class Sentence(StructList):
 		super(StructList,self).__init__(data)
 
 	def __unicode__(self):
-		L=[unicode(x) for x in self]
-		str=string.join(L,Sentence.boundary)
-		return str
+		#L=[unicode(x) for x in self]
+		L=[item for sublist in self for item in sublist]
+		sentjoinstr=Sentence.boundary.join(L)
+		return sentjoinstr
 
 	def __str__(self, encoding="UTF-8"):
-		return self.__unicode__().encode(encoding)
+		#return self.__unicode__().encode(encoding)
+		return self.__unicode__()
 	
 if __name__=="__main__":
 	a=Word(u'中文')

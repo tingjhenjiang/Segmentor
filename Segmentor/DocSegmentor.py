@@ -44,7 +44,8 @@ class DocPOSTagger(POSTagger):
 		   
 		result=Sentence()
 		for data in tagged_tokens:
-			word=data[0].decode("UTF-8")
+			#word=data[0].decode("UTF-8")
+			word=data[0]
 			result.append(WordPos(word, data[-1])) 
 
 		return result
@@ -53,7 +54,8 @@ class DocPOSTagger(POSTagger):
 		   
 		result=Sentence()
 		for data in tagged_tokens:
-			word=data[0].decode("UTF-8")
+			#word=data[0].decode("UTF-8")
+			word=data[0]
 			if self._mask_rule.match(word):
 				result.append(WordPos(word)) 
 			else:
@@ -81,13 +83,15 @@ class DocPOSTagger(POSTagger):
 		for region in region_list:
 			(start,end)=region.split("::")
 			L.append(u"(?<=%s).*?(?=%s)"%(start,end))
-		self._region_rule=string.join(L,u'|')
+		#self._region_rule=string.join(L,u'|')
+		self._region_rule='|'.join(L)
 		self._proc_callback=self._region_callback
 		self._proc_rule=self._region_rule
 
 	def _sent_postag_callback(self, m):
 		tagged_sent=self.procSentStr(m.group(0))
 		out_buf=tagged_sent.__unicode__()
+		#out_buf=tagged_sent.str()
 		return out_buf
 
 	def _region_callback(self, m):
@@ -153,24 +157,28 @@ class DocSegmentor(Segmentor):
 		for region in region_list:
 			(start,end)=region.split("::")
 			L.append(u"(?<=%s).*?(?=%s)"%(start,end))
-		self._region_rule=string.join(L,u'|')
+		#self._region_rule=string.join(L,u'|')
+		self._region_rule='|'.join(L)
 		self._proc_callback=self._region_callback
 		self._proc_rule=self._region_rule
 
 	def _sent_segment_callback(self, m):
 		seged_sent=self.procSent(m.group(0))
 		out_buf=seged_sent.__unicode__()
+		#out_buf=seged_sent.str()
 		return out_buf
 
 	def _sent_segment_postag_callback(self, m):
 		seged_sent=self.procSent(m.group(0))
 		tagged_sent=self.POSTagger.procSent(seged_sent)
 		out_buf=tagged_sent.__unicode__()
+		#out_buf=tagged_sent.str()
 		return out_buf
 
 	def _sent_postag_callback(self, m):
 		tagged_sent=self.POSTagger.procSentStr(m.group(0))
 		out_buf=tagged_sent.__unicode__()
+		#out_buf=tagged_sent.str()
 		return out_buf
 
 	def _region_callback(self, m):

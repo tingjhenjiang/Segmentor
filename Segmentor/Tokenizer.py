@@ -53,6 +53,11 @@ class Tokenizer:
 	@staticmethod
 	def ToSents(doc):
 		'''split a document into sentences'''
+		#cited from https://blog.csdn.net/blmoistawinde/article/details/82379256
+		doc = re.sub('([。！？\?])([^”’])', r"\1\n\2", doc)
+		doc = re.sub('(\.{6})([^」”’])', r"\1\n\2", doc)
+		doc = re.sub('(\…{2})([^」”’])', r"\1\n\2", doc)
+		doc = re.sub('([。！？\?][」”’])([^，。！？\?])', r'\1\n\2', doc)
 		sents=[m.group(0).strip(" \t\r\n") for m in re.finditer(Tokenizer.__to_sents_rule, doc)]
 		return sents
 
